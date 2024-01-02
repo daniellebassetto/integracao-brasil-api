@@ -5,15 +5,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IntegracaoBrasilApi.Controllers;
 
-public class BancoController(IBancoService service) : BaseController<IBancoService>(service)
+public class NcmController(INcmService service) : BaseController<INcmService>(service)
 {
-    [HttpGet]
-    public async Task<ActionResult<List<BancoModel>>> GetAll()
+    [HttpGet("{code}")]
+    public async Task<ActionResult<NcmModel>> Get(string code)
     {
-        var response = await _service.GetAll();
+        var response = await _service.Get(code);
 
         if (response == null)
-            return BadRequest("Nenhum banco encontrado!");
+            return BadRequest("Nenhum ncm encontrado!");
         else
             return Ok(response);
     }

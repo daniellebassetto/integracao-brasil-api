@@ -5,13 +5,13 @@ using IntegracaoBrasilApi.Service.Interface;
 
 namespace IntegracaoBrasilApi.Service;
 
-public class CepService(IMapper mapper, ICepRefit refit) : BaseService<ICepRefit>(mapper, refit), ICepService
+public class NcmService(IMapper mapper, INcmRefit refit) : BaseService<INcmRefit>(mapper, refit), INcmService
 {
-    public async Task<CepModel?> Get(string cep)
+    public async Task<NcmModel?> Get(string code)
     {
-        var response = await _refit.Get(cep);
+        var response = await _refit.Get(code);
         if (response != null && response.IsSuccessStatusCode)
-            return _mapper.Map<CepModel>(response.Content);
+            return _mapper.Map<NcmModel>(response.Content);
         else
             return null;
     }

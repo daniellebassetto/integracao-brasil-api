@@ -5,14 +5,11 @@ using IntegracaoBrasilApi.Service.Interface;
 
 namespace IntegracaoBrasilApi.Service;
 
-public class BancoService(IMapper mapper, IBancoRefit bancoRefit) : IBancoService
+public class BancoService(IMapper mapper, IBancoRefit refit) : BaseService<IBancoRefit>(mapper, refit), IBancoService
 {
-    private readonly IBancoRefit _bancoRefit = bancoRefit;
-    private readonly IMapper _mapper = mapper;
-
-    public async Task<List<BancoModel>?> Get()
+    public async Task<List<BancoModel>?> GetAll()
     {
-        var response = await _bancoRefit.Get();
+        var response = await _refit.GetAll();
         if (response != null && response.IsSuccessStatusCode)
             return _mapper.Map<List<BancoModel>>(response.Content);
         else

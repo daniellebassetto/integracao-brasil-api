@@ -2,7 +2,7 @@
 
 namespace IntegracaoBrasilApi.Service.Interface;
 
-public interface IBancoService
+public interface IBancoService : IBaseService
 {
-    Task<List<BancoModel>?> Get();
+    Task<List<BancoModel>?> GetAll();
 }

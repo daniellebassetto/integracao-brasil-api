@@ -17,6 +17,7 @@ public static class ServiceCollectionExtensions
         service.AddScoped<ICnpjService, CnpjService>();
         service.AddScoped<IBancoService, BancoService>();
         service.AddScoped<IFeriadoService, FeriadoService>();
+        service.AddScoped<INcmService, NcmService>();
 
         #region Refit
         var baseUrlViaCep = configuration[ConfigViaCepIntegration];
@@ -26,6 +27,7 @@ public static class ServiceCollectionExtensions
         service.AddRefitClient<ICnpjRefit>().ConfigureHttpClient(c => { c.BaseAddress = new Uri(baseUrlBrasilApi ?? string.Empty); });
         service.AddRefitClient<IBancoRefit>().ConfigureHttpClient(c => { c.BaseAddress = new Uri(baseUrlBrasilApi ?? string.Empty); });
         service.AddRefitClient<IFeriadoRefit>().ConfigureHttpClient(c => { c.BaseAddress = new Uri(baseUrlBrasilApi ?? string.Empty); });
+        service.AddRefitClient<INcmRefit>().ConfigureHttpClient(c => { c.BaseAddress = new Uri(baseUrlBrasilApi ?? string.Empty); });
         #endregion
 
         service.AddAutoMapper(typeof(DTOToModelMap));

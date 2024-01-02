@@ -2,7 +2,7 @@
 
 namespace IntegracaoBrasilApi.Service.Interface;
 
-public interface ICnpjService : IBaseService
+public interface INcmService : IBaseService
 {
-    Task<CnpjModel?> Get(string cnpj);
+    Task<NcmModel?> Get(string code);
 }

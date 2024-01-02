@@ -12,5 +12,6 @@ public class DTOToModelMap : Profile
         CreateMap<CnpjDTO, CnpjModel>().ReverseMap();
         CreateMap<CepDTO, CepModel>().ReverseMap();
         CreateMap<FeriadoDTO, FeriadoModel>().ReverseMap();
+        CreateMap<NcmDTO, NcmModel>().ReverseMap();
     }    
 }
