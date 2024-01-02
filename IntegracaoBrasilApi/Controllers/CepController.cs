@@ -11,9 +11,9 @@ public class CepController(ICepService cepService) : ControllerBase
     private readonly ICepService _cepService = cepService;
 
     [HttpGet("{cep}")]
-    public async Task<ActionResult<CepModel>> GetCep(string cep)
+    public async Task<ActionResult<CepModel>> Get(string cep)
     {
-        var response = await _cepService.GetCep(cep);
+        var response = await _cepService.Get(cep);
 
         if (response == null)
             return BadRequest("Cep não encontrado!");

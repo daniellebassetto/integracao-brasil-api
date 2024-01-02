@@ -2,7 +2,7 @@
 
 namespace IntegracaoBrasilApi.Service.Interface;
 
-public interface ICnpjService
+public interface IBancoService
 {
-    Task<CnpjModel?> Get(string cnpj);
+    Task<List<BancoModel>?> Get();
 }

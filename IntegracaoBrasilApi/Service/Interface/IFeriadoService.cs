@@ -2,7 +2,7 @@
 
 namespace IntegracaoBrasilApi.Service.Interface;
 
-public interface ICnpjService
+public interface IFeriadoService
 {
-    Task<CnpjModel?> Get(string cnpj);
+    Task<List<FeriadoModel>?> Get(int ano);
 }

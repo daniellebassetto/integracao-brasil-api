@@ -11,9 +11,9 @@ public class CnpjController(ICnpjService cnpjService) : ControllerBase
     private readonly ICnpjService _cnpjService = cnpjService;
 
     [HttpGet("{cnpj}")]
-    public async Task<ActionResult<CnpjModel>> GetCnpj(string cnpj)
+    public async Task<ActionResult<CnpjModel>> Get(string cnpj)
     {
-        var response = await _cnpjService.GetCnpj(cnpj);
+        var response = await _cnpjService.Get(cnpj);
 
         if (response == null)
             return BadRequest("Cnpj não encontrado!");

@@ -1,6 +1,4 @@
 using IntegracaoBrasilApi.Extensions;
-using IntegracaoBrasilApi.Service;
-using IntegracaoBrasilApi.Service.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,10 +6,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<ICepService, CepService>();
-builder.Services.AddScoped<ICnpjService, CnpjService>();
-
-builder.Services.AddIntegrations(builder.Configuration);
+builder.Services.ConfigureServices(builder.Configuration);
 
 var app = builder.Build();
 
