@@ -2,7 +2,6 @@
 using IntegracaoBrasilApi.Service.Interface;
 using IntegracaoBrasilApi.Service;
 using Refit;
-using IntegracaoBrasilApi.Mapping;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 
@@ -40,8 +39,6 @@ public static class ServiceCollectionExtensions
         service.AddRefitClient<IFeriadoRefit>(refitSettings).ConfigureHttpClient(c => { c.BaseAddress = new Uri(baseUrlBrasilApi ?? string.Empty); });
         service.AddRefitClient<INcmRefit>(refitSettings).ConfigureHttpClient(c => { c.BaseAddress = new Uri(baseUrlBrasilApi ?? string.Empty); });
         #endregion
-
-        service.AddAutoMapper(typeof(DTOToModelMap));
 
         return service;
     }
