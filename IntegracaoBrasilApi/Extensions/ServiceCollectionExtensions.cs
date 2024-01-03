@@ -30,14 +30,15 @@ public static class ServiceCollectionExtensions
             ContentSerializer = new NewtonsoftJsonContentSerializer(new JsonSerializerSettings
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                NullValueHandling = NullValueHandling.Ignore,
             })
         };
 
         service.AddRefitClient<ICepRefit>(refitSettings).ConfigureHttpClient(c => { c.BaseAddress = new Uri(baseUrlViaCep ?? string.Empty); });
-        service.AddRefitClient<ICnpjRefit>().ConfigureHttpClient(c => { c.BaseAddress = new Uri(baseUrlBrasilApi ?? string.Empty); });
-        service.AddRefitClient<IBancoRefit>().ConfigureHttpClient(c => { c.BaseAddress = new Uri(baseUrlBrasilApi ?? string.Empty); });
-        service.AddRefitClient<IFeriadoRefit>().ConfigureHttpClient(c => { c.BaseAddress = new Uri(baseUrlBrasilApi ?? string.Empty); });
-        service.AddRefitClient<INcmRefit>().ConfigureHttpClient(c => { c.BaseAddress = new Uri(baseUrlBrasilApi ?? string.Empty); });
+        service.AddRefitClient<ICnpjRefit>(refitSettings).ConfigureHttpClient(c => { c.BaseAddress = new Uri(baseUrlBrasilApi ?? string.Empty); });
+        service.AddRefitClient<IBancoRefit>(refitSettings).ConfigureHttpClient(c => { c.BaseAddress = new Uri(baseUrlBrasilApi ?? string.Empty); });
+        service.AddRefitClient<IFeriadoRefit>(refitSettings).ConfigureHttpClient(c => { c.BaseAddress = new Uri(baseUrlBrasilApi ?? string.Empty); });
+        service.AddRefitClient<INcmRefit>(refitSettings).ConfigureHttpClient(c => { c.BaseAddress = new Uri(baseUrlBrasilApi ?? string.Empty); });
         #endregion
 
         service.AddAutoMapper(typeof(DTOToModelMap));

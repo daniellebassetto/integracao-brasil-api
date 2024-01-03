@@ -1,12 +1,19 @@
-﻿namespace IntegracaoBrasilApi.Model;
+﻿using Newtonsoft.Json;
 
-public class NcmModel(string? codigo, string? descricao, DateTime dataInicio, DateTime dataFim, string? tipoAto, string? numeroAto, int anoAto)
+namespace IntegracaoBrasilApi.Model;
+
+public class NcmModel
 {
-    public string? Codigo { get; private set; } = codigo;
-    public string? Descricao { get; private set; } = descricao;
-    public DateTime DataInicio { get; private set; } = dataInicio;
-    public DateTime DataFim { get; private set; } = dataFim;
-    public string? TipoAto { get; private set; } = tipoAto;
-    public string? NumeroAto { get; private set; } = numeroAto;
-    public int AnoAto { get; private set; } = anoAto;
+    public string? Codigo { get; set; }
+    public string? Descricao { get; set; }
+    [JsonProperty("data_inicio")]
+    public DateTime DataInicio { get; set; }
+    [JsonProperty("data_fim")]
+    public DateTime DataFim { get; set; }
+    [JsonProperty("tipo_ato")]
+    public string? TipoAto { get; set; }
+    [JsonProperty("numero_ato")]
+    public string? NumeroAto { get; set; }
+    [JsonProperty("ano_ato")]
+    public string? AnoAto { get; set; }
 }

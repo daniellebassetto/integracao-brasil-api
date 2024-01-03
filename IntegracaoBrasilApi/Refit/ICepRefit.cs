@@ -1,4 +1,4 @@
-﻿using IntegracaoBrasilApi.DTOs;
+﻿using IntegracaoBrasilApi.Model;
 using Refit;
 
 namespace IntegracaoBrasilApi.Refit;
@@ -6,5 +6,5 @@ namespace IntegracaoBrasilApi.Refit;
 public interface ICepRefit
 {
     [Get("/ws/{cep}/json")]
-    Task<ApiResponse<CepDTO>> Get(string cep);
+    Task<ApiResponse<CepModel>> Get(string cep);
 }

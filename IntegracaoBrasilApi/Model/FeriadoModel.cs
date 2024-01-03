@@ -1,8 +1,13 @@
-﻿namespace IntegracaoBrasilApi.Model;
+﻿using Newtonsoft.Json;
 
-public class FeriadoModel(DateTime data, string? nome, string? tipo)
+namespace IntegracaoBrasilApi.Model;
+
+public class FeriadoModel
 {
-    public DateTime Data { get; private set; } = data;
-    public string? Nome { get; private set; } = nome;
-    public string? Tipo { get; private set; } = tipo;
+    [JsonProperty("date")]
+    public DateTime Data { get; set; }
+    [JsonProperty("name")]
+    public string? Nome { get; set; }
+    [JsonProperty("type")]
+    public string? Tipo { get; set; }
 }

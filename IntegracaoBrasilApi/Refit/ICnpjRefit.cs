@@ -1,4 +1,4 @@
-﻿using IntegracaoBrasilApi.DTOs;
+﻿using IntegracaoBrasilApi.Model;
 using Refit;
 
 namespace IntegracaoBrasilApi.Refit;
@@ -6,5 +6,5 @@ namespace IntegracaoBrasilApi.Refit;
 public interface ICnpjRefit
 {
     [Get("/api/cnpj/v1/{cnpj}")]
-    Task <ApiResponse<CnpjDTO>> Get(string cnpj);
+    Task <ApiResponse<CnpjModel>> Get(string cnpj);
 }

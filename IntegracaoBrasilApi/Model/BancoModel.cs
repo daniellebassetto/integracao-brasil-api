@@ -1,8 +1,12 @@
-﻿namespace IntegracaoBrasilApi.Model;
+﻿using Newtonsoft.Json;
 
-public class BancoModel(string? ispb, string? nome, string? nomeCompleto)
+namespace IntegracaoBrasilApi.Model;
+
+public class BancoModel
 {
-    public string? Ispb { get; private set; } = ispb;
-    public string? Nome { get; private set; } = nome;
-    public string? NomeCompleto { get; private set; } = nomeCompleto;
+    public string? Ispb { get; set; }
+    [JsonProperty("name")]
+    public string? Nome { get; set; }
+    [JsonProperty("fullName")]
+    public string? NomeCompleto { get; set; }
 }
