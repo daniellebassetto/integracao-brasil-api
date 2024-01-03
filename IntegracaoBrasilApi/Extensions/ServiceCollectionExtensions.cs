@@ -3,6 +3,8 @@ using IntegracaoBrasilApi.Service.Interface;
 using IntegracaoBrasilApi.Service;
 using Refit;
 using IntegracaoBrasilApi.Mapping;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace IntegracaoBrasilApi.Extensions;
 
@@ -18,12 +20,20 @@ public static class ServiceCollectionExtensions
         service.AddScoped<IBancoService, BancoService>();
         service.AddScoped<IFeriadoService, FeriadoService>();
         service.AddScoped<INcmService, NcmService>();
-
+               
         #region Refit
         var baseUrlViaCep = configuration[ConfigViaCepIntegration];
         var baseUrlBrasilApi = configuration[ConfigBrasilApi];
 
-        service.AddRefitClient<ICepRefit>().ConfigureHttpClient(c => { c.BaseAddress = new Uri(baseUrlViaCep ?? string.Empty); });
+        var refitSettings = new RefitSettings
+        {
+            ContentSerializer = new NewtonsoftJsonContentSerializer(new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            })
+        };
+
+        service.AddRefitClient<ICepRefit>(refitSettings).ConfigureHttpClient(c => { c.BaseAddress = new Uri(baseUrlViaCep ?? string.Empty); });
         service.AddRefitClient<ICnpjRefit>().ConfigureHttpClient(c => { c.BaseAddress = new Uri(baseUrlBrasilApi ?? string.Empty); });
         service.AddRefitClient<IBancoRefit>().ConfigureHttpClient(c => { c.BaseAddress = new Uri(baseUrlBrasilApi ?? string.Empty); });
         service.AddRefitClient<IFeriadoRefit>().ConfigureHttpClient(c => { c.BaseAddress = new Uri(baseUrlBrasilApi ?? string.Empty); });
