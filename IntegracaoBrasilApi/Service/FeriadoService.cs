@@ -1,12 +1,11 @@
-﻿using AutoMapper;
-using IntegracaoBrasilApi.Model;
+﻿using IntegracaoBrasilApi.Model;
 using IntegracaoBrasilApi.Refit;
 using IntegracaoBrasilApi.Service.Interface;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IntegracaoBrasilApi.Service;
 
-public class FeriadoService(IMapper mapper, IFeriadoRefit refit) : BaseService<IFeriadoRefit>(mapper, refit), IFeriadoService
+public class FeriadoService(IFeriadoRefit refit) : BaseService<IFeriadoRefit>(refit), IFeriadoService
 {
     [HttpGet("{ano}")]
     public async Task<List<FeriadoModel>?> Get(int ano)

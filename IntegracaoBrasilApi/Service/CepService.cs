@@ -1,11 +1,10 @@
-﻿using AutoMapper;
-using IntegracaoBrasilApi.Model;
+﻿using IntegracaoBrasilApi.Model;
 using IntegracaoBrasilApi.Refit;
 using IntegracaoBrasilApi.Service.Interface;
 
 namespace IntegracaoBrasilApi.Service;
 
-public class CepService(IMapper mapper, ICepRefit refit) : BaseService<ICepRefit>(mapper, refit), ICepService
+public class CepService(ICepRefit refit) : BaseService<ICepRefit>(refit), ICepService
 {
     public async Task<CepModel?> Get(string cep)
     {

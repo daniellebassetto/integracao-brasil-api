@@ -1,11 +1,10 @@
-﻿using AutoMapper;
-using IntegracaoBrasilApi.Model;
+﻿using IntegracaoBrasilApi.Model;
 using IntegracaoBrasilApi.Refit;
 using IntegracaoBrasilApi.Service.Interface;
 
 namespace IntegracaoBrasilApi.Service;
 
-public class CnpjService(IMapper mapper, ICnpjRefit refit) : BaseService<ICnpjRefit>(mapper, refit), ICnpjService
+public class CnpjService(ICnpjRefit refit) : BaseService<ICnpjRefit>(refit), ICnpjService
 {
     public async Task<CnpjModel?> Get(string cnpj)
     {

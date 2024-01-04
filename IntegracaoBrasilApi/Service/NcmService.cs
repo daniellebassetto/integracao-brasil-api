@@ -1,11 +1,10 @@
-﻿using AutoMapper;
-using IntegracaoBrasilApi.Model;
+﻿using IntegracaoBrasilApi.Model;
 using IntegracaoBrasilApi.Refit;
 using IntegracaoBrasilApi.Service.Interface;
 
 namespace IntegracaoBrasilApi.Service;
 
-public class NcmService(IMapper mapper, INcmRefit refit) : BaseService<INcmRefit>(mapper, refit), INcmService
+public class NcmService(INcmRefit refit) : BaseService<INcmRefit>(refit), INcmService
 {
     public async Task<NcmModel?> Get(string code)
     {
