@@ -11,7 +11,7 @@ public class BancoService(IMapper mapper, IBancoRefit refit) : BaseService<IBanc
     {
         var response = await _refit.GetAll();
         if (response != null && response.IsSuccessStatusCode)
-            return _mapper.Map<List<BancoModel>>(response.Content);
+            return response.Content;
         else
             return null;
     }

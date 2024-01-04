@@ -11,7 +11,7 @@ public class NcmService(IMapper mapper, INcmRefit refit) : BaseService<INcmRefit
     {
         var response = await _refit.Get(code);
         if (response != null && response.IsSuccessStatusCode)
-            return _mapper.Map<NcmModel>(response.Content);
+            return response.Content;
         else
             return null;
     }

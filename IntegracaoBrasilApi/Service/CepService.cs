@@ -11,7 +11,7 @@ public class CepService(IMapper mapper, ICepRefit refit) : BaseService<ICepRefit
     {
         var response = await _refit.Get(cep);
         if (response != null && response.IsSuccessStatusCode)
-            return _mapper.Map<CepModel>(response.Content);
+            return response.Content;
         else
             return null;
     }

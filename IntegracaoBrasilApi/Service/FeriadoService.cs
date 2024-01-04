@@ -13,7 +13,7 @@ public class FeriadoService(IMapper mapper, IFeriadoRefit refit) : BaseService<I
     {
         var response = await _refit.Get(ano);
         if (response != null && response.IsSuccessStatusCode)
-            return _mapper.Map<List<FeriadoModel>>(response.Content);
+            return response.Content;
         else
             return null;
     }
