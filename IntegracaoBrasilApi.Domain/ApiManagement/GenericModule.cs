@@ -1,53 +1,9 @@
-﻿using Harmonit.Microservice.Base.Library.BaseService;
-using Harmonit.Microservice.Base.Library.Generic;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using System.Reflection;
+﻿using System.Reflection;
 
-namespace Harmonit.Microservice.Base.Library.BaseController;
+namespace IntegracaoBrasilApi.Domain.ApiManagement;
 
-[Authorize]
-[ApiController]
-public class BaseController<TIService, TValidate, TTypeCurrentOperation>(TIService service) : Controller
-    where TIService : IBaseService
+public class GenericModule
 {
-    public Guid _guidApiDataRequest;
-    public TIService? _service = service;
-
-    //[NonAction]
-    //public async Task<ActionResult> ResponseAsync<TTypeResult, TTypeException>(BaseResponseApiContent<TTypeResult, TTypeException> result)
-    //{
-
-    //}
-
-    [NonAction]
-    public void SetData()
-    {
-        Guid guidApiDataRequest = ApiData.CreateApiDataRequest();
-        SetGuid(guidApiDataRequest);
-    }
-
-    [NonAction]
-    public void SetGuid(Guid guidApiDataRequest)
-    {
-        _guidApiDataRequest = guidApiDataRequest;
-        SetGuidApiDataRequest(this, guidApiDataRequest);
-    }
-
-    [NonAction]
-    public override async void OnActionExecuting(ActionExecutingContext context)
-    {
-        try
-        {
-            SetData();
-        }
-        catch (Exception ex)
-        {
-            
-        }
-    }
-
     public static void SetGuidApiDataRequest<TClass>(TClass @class, Guid guidApiDataRequest)
     {
         List<FieldInfo> listRuntimeFields = (from i in @class?.GetType().GetRuntimeFields() where i.FieldType.IsInterface select i).ToList();
@@ -68,8 +24,13 @@ public class BaseController<TIService, TValidate, TTypeCurrentOperation>(TIServi
     public static bool InvokeInterfaceSetGuid<TClass>(TClass @class, Guid guidBeesApiDataRequest, (FieldInfo FieldInfo, MethodInfo MethodInfo) interfaceToInvoke)
     {
         try
-        { interfaceToInvoke.MethodInfo.Invoke(interfaceToInvoke.FieldInfo.GetValue(@class), new object[] { guidBeesApiDataRequest }); }
-        catch { }
+        {
+            interfaceToInvoke.MethodInfo.Invoke(interfaceToInvoke.FieldInfo.GetValue(@class), new object[] { guidBeesApiDataRequest });
+        }
+        catch
+        {
+
+        }
         return true;
     }
 }
