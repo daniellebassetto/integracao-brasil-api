@@ -1,4 +1,6 @@
-﻿using IntegracaoBrasilApi.Domain.ApiManagement;
+﻿using IntegracaoBrasilApi.ApiClient.RefitInterfaces;
+using IntegracaoBrasilApi.Domain.ApiManagement;
+using IntegracaoBrasilApi.Domain.Interfaces;
 using IntegracaoBrasilApi.Domain.Interfaces.Repository;
 using IntegracaoBrasilApi.Domain.Interfaces.Service;
 using IntegracaoBrasilApi.Domain.Services;
@@ -28,7 +30,6 @@ public static class ConfigureServicesExtension
         Configuration = configuration;
 
         AddOptions();
-        AddLocalization();
         AddTransient();
         AddSingleton();
         AddSwaggerGen();
@@ -44,16 +45,13 @@ public static class ConfigureServicesExtension
         ServiceCollection.AddOptions();
     }
 
-    public static void AddLocalization()
-    {
-        ServiceCollection.AddLocalization(options => options.ResourcesPath = "Resources");
-    }
-
     public static void AddTransient()
     {
         ServiceCollection.AddTransient<IAuthenticationService, AuthenticationService>();
         ServiceCollection.AddTransient<IUserService, UserService>();
         ServiceCollection.AddTransient<IUserRepository, UserRepository>();
+        ServiceCollection.AddTransient<ILegalPersonRegistrationService, LegalPersonRegistrationService>();
+        ServiceCollection.AddTransient<IAddressService, AddressService>();
 
         ServiceCollection.AddTransient<IApiDataService, ApiDataService>();
     }
@@ -79,14 +77,16 @@ public static class ConfigureServicesExtension
             })
         };
 
-        //ServiceCollection.AddRefitClient<ICptecLocalityRefit>(refitSettings).ConfigureHttpClient(c => { c.BaseAddress = new Uri(baseUrlBrasilApi ?? string.Empty); });
+        ServiceCollection.AddRefitClient<ILegalPersonRegistrationRefit>(refitSettings).ConfigureHttpClient(c => { c.BaseAddress = new Uri(baseUrlBrasilApi ?? string.Empty); });
+        ServiceCollection.AddRefitClient<IAddressRefit>(refitSettings).ConfigureHttpClient(c => { c.BaseAddress = new Uri(baseUrlBrasilApi ?? string.Empty); });
     }
 
     public static void AddSwaggerGen()
     {
         OpenApiContact contact = new()
         {
-            Name = "BrasilApi"
+            Name = "BrasilApi",
+            Url = new Uri("https://github.com/danibassetto")
         };
 
         ServiceCollection.AddSwaggerGen(x =>

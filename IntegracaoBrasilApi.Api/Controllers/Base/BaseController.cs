@@ -1,6 +1,7 @@
 ﻿using IntegracaoBrasilApi.Arguments;
 using IntegracaoBrasilApi.Domain.ApiManagement;
 using IntegracaoBrasilApi.Domain.Interfaces.Service;
+using IntegracaoBrasilApi.Domain.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -9,17 +10,24 @@ namespace IntegracaoBrasilApi.Api.Controllers;
 
 [Authorize]
 [ApiController]
-public class BaseController<TIService, TInputCreate, TInputUpdate, TInputIdentityUpdate, TOutput, TInputIdentifier>(TIService service) : Controller
+public class BaseController<TIService, TInputCreate, TInputUpdate, TInputIdentityUpdate, TOutput, TInputIdentifier> : Controller
     where TIService : IBaseService<TInputCreate, TInputUpdate, TInputIdentityUpdate, TOutput, TInputIdentifier>
     where TInputIdentityUpdate : BaseInputIdentityUpdate<TInputUpdate>
 {
+    protected readonly IApiDataService? _apiDataService;
     public Guid _guidApiDataRequest;
-    public TIService _service = service;
+    public TIService? _service;
+    public List<Notification> ListNotification = [];
 
-    [NonAction]
-    public async Task<ActionResult> ResponseExceptionAsync(Exception ex)
+    public BaseController(IApiDataService apiDataService, TIService service)
     {
-        return await Task.FromResult(BadRequest(new { Value = ex.Message }));
+        _apiDataService = apiDataService;
+        _service = service;
+    }
+
+    public BaseController(IApiDataService apiDataService)
+    {
+        _apiDataService = apiDataService;
     }
 
     #region Read
@@ -28,7 +36,11 @@ public class BaseController<TIService, TInputCreate, TInputUpdate, TInputIdentit
     {
         try
         {
-            return await ResponseAsync(_service.GetAll());
+            return await ResponseAsync(_service!.GetAll());
+        }
+        catch (BaseResponseException ex)
+        {
+            return await BaseResponseExceptionAsync(ex);
         }
         catch (Exception ex)
         {
@@ -41,7 +53,11 @@ public class BaseController<TIService, TInputCreate, TInputUpdate, TInputIdentit
     {
         try
         {
-            return await ResponseAsync(_service.Get(id));
+            return await ResponseAsync(_service!.Get(id));
+        }
+        catch (BaseResponseException ex)
+        {
+            return await BaseResponseExceptionAsync(ex);
         }
         catch (Exception ex)
         {
@@ -54,7 +70,11 @@ public class BaseController<TIService, TInputCreate, TInputUpdate, TInputIdentit
     {
         try
         {
-            return await ResponseAsync(_service.GetListByListId(listId));
+            return await ResponseAsync(_service!.GetListByListId(listId));
+        }
+        catch (BaseResponseException ex)
+        {
+            return await BaseResponseExceptionAsync(ex);
         }
         catch (Exception ex)
         {
@@ -67,7 +87,11 @@ public class BaseController<TIService, TInputCreate, TInputUpdate, TInputIdentit
     {
         try
         {
-            return await ResponseAsync(_service.GetByIdentifier(inputIdentifier));
+            return await ResponseAsync(_service!.GetByIdentifier(inputIdentifier));
+        }
+        catch (BaseResponseException ex)
+        {
+            return await BaseResponseExceptionAsync(ex);
         }
         catch (Exception ex)
         {
@@ -76,11 +100,15 @@ public class BaseController<TIService, TInputCreate, TInputUpdate, TInputIdentit
     }
 
     [HttpPost("GetListByListIdentifier")]
-    public virtual async Task<ActionResult<BaseResponse<List<TOutput>>>> GetListByListIdentifier([FromBody] List<TInputIdentifier> listInputIdentifier)
+    public virtual async Task<ActionResult<BaseResponse<List<TOutput>>>> GetListByListIdentifier(List<TInputIdentifier> listInputIdentifier)
     {
         try
         {
-            return await ResponseAsync(_service.GetListByListIdentifier(listInputIdentifier));
+            return await ResponseAsync(_service!.GetListByListIdentifier(listInputIdentifier));
+        }
+        catch (BaseResponseException ex)
+        {
+            return await BaseResponseExceptionAsync(ex);
         }
         catch (Exception ex)
         {
@@ -96,7 +124,11 @@ public class BaseController<TIService, TInputCreate, TInputUpdate, TInputIdentit
     {
         try
         {
-            return await ResponseAsync(_service.Create(inputCreate));
+            return await ResponseAsync(_service?.Create(inputCreate));
+        }
+        catch (BaseResponseException ex)
+        {
+            return await BaseResponseExceptionAsync(ex);
         }
         catch (Exception ex)
         {
@@ -109,7 +141,11 @@ public class BaseController<TIService, TInputCreate, TInputUpdate, TInputIdentit
     {
         try
         {
-            return await ResponseAsync(_service.Create(listInputCreate));
+            return await ResponseAsync(_service?.Create(listInputCreate));
+        }
+        catch (BaseResponseException ex)
+        {
+            return await BaseResponseExceptionAsync(ex);
         }
         catch (Exception ex)
         {
@@ -124,7 +160,11 @@ public class BaseController<TIService, TInputCreate, TInputUpdate, TInputIdentit
     {
         try
         {
-            return await ResponseAsync(_service.Update(inputIdentityUpdate));
+            return await ResponseAsync(_service?.Update(inputIdentityUpdate));
+        }
+        catch (BaseResponseException ex)
+        {
+            return await BaseResponseExceptionAsync(ex);
         }
         catch (Exception ex)
         {
@@ -137,7 +177,11 @@ public class BaseController<TIService, TInputCreate, TInputUpdate, TInputIdentit
     {
         try
         {
-            return await ResponseAsync(_service.Update(listInputIdentityUpdate));
+            return await ResponseAsync(_service?.Update(listInputIdentityUpdate));
+        }
+        catch (BaseResponseException ex)
+        {
+            return await BaseResponseExceptionAsync(ex);
         }
         catch (Exception ex)
         {
@@ -152,7 +196,11 @@ public class BaseController<TIService, TInputCreate, TInputUpdate, TInputIdentit
     {
         try
         {
-            return await ResponseAsync(_service.Delete(id));
+            return await ResponseAsync(_service?.Delete(id));
+        }
+        catch (BaseResponseException ex)
+        {
+            return await BaseResponseExceptionAsync(ex);
         }
         catch (Exception ex)
         {
@@ -165,7 +213,11 @@ public class BaseController<TIService, TInputCreate, TInputUpdate, TInputIdentit
     {
         try
         {
-            return await ResponseAsync(_service.Delete(listId));
+            return await ResponseAsync(_service?.Delete(listId));
+        }
+        catch (BaseResponseException ex)
+        {
+            return await BaseResponseExceptionAsync(ex);
         }
         catch (Exception ex)
         {
@@ -175,22 +227,87 @@ public class BaseController<TIService, TInputCreate, TInputUpdate, TInputIdentit
     #endregion
 
     [NonAction]
-    public async Task<ActionResult> ResponseAsync(object result)
+    public async Task<ActionResult> ResponseAsync(BaseResponseApiContent<object, object> result)
     {
-        return await ResponseAsync<object>(result);
+        return await ResponseAsync<object, object>(result);
+    }
+
+    [NonAction]
+    public async Task<ActionResult> ResponseAsync<TTypeResult, TTypeException>(BaseResponseApiContent<TTypeResult, TTypeException> result)
+    {
+        if (_service != null)
+            ListNotification.AddRange(_service?.ListNotification!);
+
+        List<Notification> listNegativeNotification = (from i in ListNotification.Union(result!.ListNotification) ?? [] where i.MessageType == EnumMessageType.Negative select i).ToList();
+
+        if (listNegativeNotification.Count == 0)
+        {
+            try
+            {
+                _apiDataService?.RemoveApiDataRequest(_guidApiDataRequest);
+                if (result.Result != null)
+                {
+                    return StatusCode(result.StatusCode != 0 ? result.StatusCode : 200, new BaseResponseApi<TTypeResult, TTypeException> { Value = new BaseResponseApiContent<TTypeResult, TTypeException> { Result = result.Result, ListNotification = result.ListNotification } });
+                }
+                else
+                    return StatusCode(result.StatusCode != 0 ? result.StatusCode : 400, new BaseResponseApi<TTypeResult, TTypeException> { Value = new BaseResponseApiContent<TTypeResult, TTypeException> { Exception = result.Exception, ListNotification = result.ListNotification } });
+            }
+            catch (BaseResponseException ex)
+            {
+                return await BaseResponseExceptionAsync(ex);
+            }
+            catch (Exception ex)
+            {
+                _apiDataService?.RemoveApiDataRequest(_guidApiDataRequest);
+                return BadRequest(new BaseResponseApi<TTypeResult, TTypeException> { Value = new BaseResponseApiContent<TTypeResult, TTypeException> { Result = default, ListNotification = [new($"Houve um problema interno com o servidor. {ex.Message}", EnumMessageType.Negative)] } });
+            }
+        }
+        else
+        {
+            _apiDataService?.RemoveApiDataRequest(_guidApiDataRequest);
+            return BadRequest(new BaseResponseApi<TTypeResult, TTypeException> { Value = new BaseResponseApiContent<TTypeResult, TTypeException> { ListNotification = result.ListNotification } });
+        }
     }
 
     [NonAction]
     public async Task<ActionResult> ResponseAsync<ResponseType>(ResponseType result)
     {
-        try
+        if (_service != null)
+            ListNotification.AddRange(_service?.ListNotification!);
+
+        List<Notification> listNegativeNotification = (from i in ListNotification ?? [] where i.MessageType == EnumMessageType.Negative select i).ToList();
+
+        if (listNegativeNotification.Count == 0)
         {
-            return await Task.FromResult(Ok(new BaseResponse<ResponseType> { Result = result }));
+            try
+            {
+                return Ok(new BaseResponseApi<ResponseType, string> { Value = new BaseResponseApiContent<ResponseType, string>() { Result = result } });
+            }
+            catch (BaseResponseException ex)
+            {
+                return await BaseResponseExceptionAsync(ex);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Houve um problema interno com o servidor. Entre em contato com o Administrador do sistema caso o problema persista. Erro interno: {ex.Message}");
+            }
         }
-        catch (Exception ex)
+        else
         {
-            return await Task.FromResult(BadRequest($"Houve um problema interno com o servidor. Entre em contato com o Administrador do sistema caso o problema persista. Erro interno: {ex.Message}"));
+            return BadRequest(listNegativeNotification);
         }
+    }
+
+    [NonAction]
+    public async Task<ActionResult> BaseResponseExceptionAsync(BaseResponseException ex)
+    {
+        return await Task.FromResult(BadRequest(new { Value = new { Result = (object?)default, ListNotification = ex.Incidents } }));
+    }
+
+    [NonAction]
+    public async Task<ActionResult> ResponseExceptionAsync(Exception ex)
+    {
+        return await Task.FromResult(BadRequest(new { Value = ex.Message }));
     }
 
     [NonAction]
@@ -222,7 +339,7 @@ public class BaseController<TIService, TInputCreate, TInputUpdate, TInputIdentit
 }
 
 #region InputIdentityUpdate, TInputUpdate, TEntity, TInputIdentifier
-public class BaseController_1<TIService>(TIService service) : BaseController<TIService, object, object, BaseInputIdentityUpdate_0, object, object>(service)
+public class BaseController_1<TIService>(IApiDataService apiDataService, TIService service) : BaseController<TIService, object, object, BaseInputIdentityUpdate_0, object, object>(apiDataService, service)
     where TIService : IBaseService_0
 { }
 #endregion

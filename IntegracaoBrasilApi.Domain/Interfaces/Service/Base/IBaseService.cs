@@ -1,10 +1,12 @@
 ﻿using IntegracaoBrasilApi.Arguments;
+using IntegracaoBrasilApi.Domain.Services;
 
 namespace IntegracaoBrasilApi.Domain.Interfaces.Service;
 
 public interface IBaseService<TInputCreate, TInputUpdate, TInputIdentityUpdate, TOutput, TInputIdentifier>
     where TInputIdentityUpdate : BaseInputIdentityUpdate<TInputUpdate>
 {
+    IReadOnlyCollection<Notification> ListNotification { get; }
     List<TOutput> GetAll();
     TOutput Get(string id);
     List<TOutput> GetListByListId(List<string> listId);

@@ -3,6 +3,9 @@ using IntegracaoBrasilApi.Domain.ApiManagement;
 using IntegracaoBrasilApi.Domain.Entities;
 using IntegracaoBrasilApi.Domain.Interfaces.Repository;
 using IntegracaoBrasilApi.Domain.Interfaces.Service;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Refit;
 
 namespace IntegracaoBrasilApi.Domain.Services;
 
@@ -15,6 +18,8 @@ public class BaseService<TIRefit, TBaseRepository, TInputCreate, TInputUpdate, T
     public Guid _guidApiDataRequest;
     public TIRefit? _refit = refit;
     protected TBaseRepository? _repository = repository;
+    private readonly List<Notification>? _listNotification;
+    public IReadOnlyCollection<Notification> ListNotification => _listNotification ?? [];
 
     public void SetGuid(Guid guidApiDataRequest)
     {
@@ -22,35 +27,71 @@ public class BaseService<TIRefit, TBaseRepository, TInputCreate, TInputUpdate, T
         GenericModule.SetGuidApiDataRequest(this, guidApiDataRequest);
     }
 
-    //public BaseResponseApiContent<TTypeResult, TTypeException> ReturnResponse<TTypeResult, TTypeException>(ApiResponse<string> response, bool isHarmonitIntegration = false)
-    //{
+    public BaseResponseApiContent<TTypeResult, TTypeException> ReturnResponse<TTypeResult, TTypeException>(ApiResponse<string> response)
+    {
+        BaseResponseApiContent<TTypeResult, TTypeException>? baseResponseApiContent = new();
 
-    //}
+        if (response != null)
+        {
+            if (response.IsSuccessStatusCode)
+            {
+                try
+                {
+                    baseResponseApiContent.ListNotification = [new("Processo realizado com sucesso", EnumMessageType.Positive)];
+                    baseResponseApiContent.StatusCode = response.StatusCode != 0 ? (int)response.StatusCode : 200;
+                    baseResponseApiContent.Result = JsonConvert.DeserializeObject<TTypeResult>(response.Content, new StringEnumConverter());
+                }
+                catch (Exception)
+                {
+                    baseResponseApiContent.StatusCode = 400;
+                    baseResponseApiContent.ListNotification = [new("Não foi possível ler a resposta da requisição", EnumMessageType.Negative)];
+                }
+            }
+            else
+            {
+                try
+                {
+                    baseResponseApiContent.ListNotification = [new("Ocorreram problemas com esta requisição", EnumMessageType.Negative)];
+                    baseResponseApiContent.StatusCode = response.StatusCode != 0 ? (int)response.StatusCode : 400;
+                    baseResponseApiContent.Exception = JsonConvert.DeserializeObject<TTypeException>(response.Error.Content!);
+                }
+                catch
+                {
+                    baseResponseApiContent.ListNotification = [new("Não foi possível ler a exceção da requisição", EnumMessageType.Negative)];
+                    baseResponseApiContent.StatusCode = 400;
+                }
+            }
+        }
+        else
+            baseResponseApiContent.ListNotification = [new("Nenhuma resposta recebida", EnumMessageType.Negative)];
+
+        return baseResponseApiContent;
+    }
 
     #region Read
     public List<TOutput> GetAll()
     {
-        return FromEntityToOutput(_repository.GetAll());
+        return FromEntityToOutput(_repository!.GetAll());
     }
 
     public TOutput Get(string id)
     {
-        return GetListByListId([id]).FirstOrDefault();
+        return GetListByListId([id]).FirstOrDefault()!;
     }
 
     public List<TOutput> GetListByListId(List<string> listId)
     {
-        return FromEntityToOutput(_repository.GetListByListId(listId));
+        return FromEntityToOutput(_repository!.GetListByListId(listId));
     }
 
     public TOutput GetByIdentifier(TInputIdentifier inputIdentifier)
     {
-        return FromEntityToOutput(_repository.GetByIdentifier(inputIdentifier));
+        return FromEntityToOutput(_repository!.GetByIdentifier(inputIdentifier)!);
     }
 
     public List<TOutput> GetListByListIdentifier(List<TInputIdentifier> listInputIdentifier)
     {
-        return FromEntityToOutput(_repository.GetListByListIdentifier(listInputIdentifier));
+        return FromEntityToOutput(_repository!.GetListByListIdentifier(listInputIdentifier));
     }
     #endregion
 
@@ -62,7 +103,7 @@ public class BaseService<TIRefit, TBaseRepository, TInputCreate, TInputUpdate, T
 
     public virtual List<string>? Create(List<TInputCreate> listInputCreate)
     {
-        return [.. _repository.Create(FromInputCreateToEntity(listInputCreate))];
+        return [.. _repository!.Create(FromInputCreateToEntity(listInputCreate))];
     }
     #endregion
 
@@ -76,9 +117,9 @@ public class BaseService<TIRefit, TBaseRepository, TInputCreate, TInputUpdate, T
     {
         var listEntity = (from i in listInputIdentityUpdate
                           let oldEntity = FromOutputToEntity(Get(i.Id ?? string.Empty))
-                          select UpdateEntity(oldEntity, i.InputUpdate)).ToList();
+                          select UpdateEntity(oldEntity, i.InputUpdate!)).ToList();
 
-        return [.. _repository.Update(listEntity)];
+        return [.. _repository!.Update(listEntity)];
     }
 
     protected TEntity UpdateEntity(TEntity oldEntity, TInputUpdate inputUpdate)
@@ -105,7 +146,7 @@ public class BaseService<TIRefit, TBaseRepository, TInputCreate, TInputUpdate, T
 
     public virtual List<bool>? Delete(List<string> listId)
     {
-        return _repository.Delete(listId);
+        return _repository!.Delete(listId);
     }
     #endregion
 
@@ -146,4 +187,8 @@ public class BaseService_1<TBaseRepository, TInputCreate, TInputUpdate, TInputId
     where TBaseRepository : IBaseRepository<TEntity, TInputIdentifier>
     where TInputIdentityUpdate : BaseInputIdentityUpdate<TInputUpdate>
     where TEntity : BaseEntity<TEntity>
+{ }
+
+public class BaseService_2<TRefit>(TRefit? refit) : BaseService<TRefit, IBaseRepository_0, object, object, BaseInputIdentityUpdate_0, BaseEntity_0, object, object>(refit, default) 
+    where TRefit : class
 { }

@@ -13,6 +13,7 @@ public static class UserMap
 
             x.MapMember(m => m.Username).SetElementName("usuario");
             x.MapMember(m => m.Password).SetElementName("senha");
+            x.MapMember(m => m.TokenExpirationDate).SetElementName("data_expiracao_token");
         });
     }
 }

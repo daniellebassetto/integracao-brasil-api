@@ -1,20 +1,30 @@
 ﻿using IntegracaoBrasilApi.Arguments;
+using IntegracaoBrasilApi.Domain.ApiManagement;
 using IntegracaoBrasilApi.Domain.Interfaces.Service;
-using Microsoft.AspNetCore.Authorization;
+using IntegracaoBrasilApi.Domain.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
-namespace IntegracaoBrasilApi.Api.Controllers;
+namespace IntegracaoBrasilApi.Api.Controllers.Address;
 
-[Route("api/[controller]")]
-[AllowAnonymous]
-public class AuthenticationController(IAuthenticationService service) : BaseController_1<IAuthenticationService>(service)
+[Route("api/brasilapi/[controller]")]
+public class AddressController(IApiDataService apiDataService, IAddressService service) : BaseController_1<IAddressService>(apiDataService, service)
 {
-    [HttpPost("Authenticate")]
-    public async Task<ActionResult<BaseResponse<OutputAuthentication>>> Authenticate(InputAuthentication inputAuthentication)
+    /// <summary>
+    /// Consulta um endereço a partir de um Código Postal (CEP)
+    /// </summary>
+    [ProducesResponseType<OutputGetByCepAddress>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [HttpGet("GetByCep/{cep}")]
+    public async Task<ActionResult<BaseResponseApi<OutputGetByCepAddress, ApiResponseException>>> GetByCep([Length(8,8)] string cep)
     {
         try
         {
-            return await ResponseAsync(_service.Authenticate(inputAuthentication));
+            return await ResponseAsync(await _service!.GetByCep(cep));
+        }
+        catch (BaseResponseException ex)
+        {
+            return await BaseResponseExceptionAsync(ex);
         }
         catch (Exception ex)
         {

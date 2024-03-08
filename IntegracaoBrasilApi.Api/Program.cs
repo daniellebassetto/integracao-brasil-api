@@ -3,7 +3,9 @@ using IntegracaoBrasilApi.Api.DependencyInjection;
 using IntegracaoBrasilApi.Api.Extensions;
 using IntegracaoBrasilApi.Domain.ApiManagement;
 using IntegracaoBrasilApi.Domain.Mapping;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +25,13 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 builder.Services.ConfigureDependencyInjection(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "BrasilApi", Version = "v1" });
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+});
 
 var configure = new MapperConfiguration(config =>
 {
