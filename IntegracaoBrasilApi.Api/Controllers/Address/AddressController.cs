@@ -16,7 +16,7 @@ public class AddressController(IApiDataService apiDataService, IAddressService s
     [LanguageDescription("es", "Consulta de dirección a partir del código postal ")]
     [ProducesResponseType<OutputGetByPostalCodeAddress>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [HttpGet("GetByCep/{cep}")]
+    [HttpGet("GetByCep/{postalCode}")]
     public async Task<ActionResult<BaseResponseApi<OutputGetByPostalCodeAddress, ApiResponseException>>> GetByPostalCode([Length(8,8)] string postalCode)
     {
         try
