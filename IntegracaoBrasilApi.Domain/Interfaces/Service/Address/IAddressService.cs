@@ -5,5 +5,5 @@ namespace IntegracaoBrasilApi.Domain.Interfaces.Service;
 
 public interface IAddressService : IBaseService_0
 {
-    Task<BaseResponseApiContent<OutputGetByPostalCodeAddress, ApiResponseException>> GetByPostalCode(string cep);
+    Task<BaseResponseApiContent<OutputGetByPostalCodeAddress, ApiResponseException>> GetByPostalCode(string postalCode);
 }

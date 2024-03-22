@@ -6,9 +6,9 @@ namespace IntegracaoBrasilApi.Domain.Services;
 
 public class AddressService(IAddressRefit refit) : BaseService_2<IAddressRefit>(refit), IAddressService
 {
-    public async Task<BaseResponseApiContent<OutputGetByPostalCodeAddress, ApiResponseException>> GetByPostalCode(string cep)
+    public async Task<BaseResponseApiContent<OutputGetByPostalCodeAddress, ApiResponseException>> GetByPostalCode(string postalCode)
     {
-        var response = await _refit!.GetByPostalCode(cep);
+        var response = await _refit!.GetByPostalCode(postalCode);
         return ReturnResponse<OutputGetByPostalCodeAddress, ApiResponseException>(response);
     }
 }

@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace IntegracaoBrasilApi.Api.Controllers.Address;
 
-[Route("api/brasilapi/[controller]")]
+[Route("api/[controller]")]
 public class AddressController(IApiDataService apiDataService, IAddressService service) : BaseController_1<IAddressService>(apiDataService, service)
 {
     [LanguageDescription("pt-br", "Consulta endereço a partir do CEP")]
@@ -17,11 +17,11 @@ public class AddressController(IApiDataService apiDataService, IAddressService s
     [ProducesResponseType<OutputGetByPostalCodeAddress>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpGet("GetByCep/{cep}")]
-    public async Task<ActionResult<BaseResponseApi<OutputGetByPostalCodeAddress, ApiResponseException>>> GetByPostalCode([Length(8,8)] string cep)
+    public async Task<ActionResult<BaseResponseApi<OutputGetByPostalCodeAddress, ApiResponseException>>> GetByPostalCode([Length(8,8)] string postalCode)
     {
         try
         {
-            return await ResponseAsync(await _service!.GetByPostalCode(cep));
+            return await ResponseAsync(await _service!.GetByPostalCode(postalCode));
         }
         catch (BaseResponseException ex)
         {

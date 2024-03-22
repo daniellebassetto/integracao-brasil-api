@@ -37,9 +37,6 @@ public class AuthenticationService(IHttpContextAccessor httpContext, IUserServic
                         return new OutputAuthentication($"Usuário autorizado, porém ocorreram problemas para salvar um arquivo do Token: '{ex.Message}'. Configure seu novo Bearer Token.", token, DateTime.UtcNow.AddDays(7));
                     }
                 }
-
-                _userService.Update(new InputIdentityUpdateUser(user.Id, new InputUpdateUser(user.Username, user.Password, DateTime.UtcNow.AddDays(7))));
-
                 return new OutputAuthentication("Usuário autorizado. Configure seu novo Bearer Token.", token, DateTime.UtcNow.AddDays(7));
             }
             else
