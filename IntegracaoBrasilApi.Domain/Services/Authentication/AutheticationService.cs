@@ -34,13 +34,13 @@ public class AuthenticationService(IHttpContextAccessor httpContext, IUserServic
                     }
                     catch(Exception ex) 
                     {
-                        return new OutputAuthentication($"Usúario autorizado, porém ocorreram problemas para salvar um arquivo do Token: '{ex.Message}'. Configure seu novo Bearer Token.", token, DateTime.UtcNow.AddDays(7));
+                        return new OutputAuthentication($"Usuário autorizado, porém ocorreram problemas para salvar um arquivo do Token: '{ex.Message}'. Configure seu novo Bearer Token.", token, DateTime.UtcNow.AddDays(7));
                     }
                 }
 
                 _userService.Update(new InputIdentityUpdateUser(user.Id, new InputUpdateUser(user.Username, user.Password, DateTime.UtcNow.AddDays(7))));
 
-                return new OutputAuthentication("Usúario autorizado. Configure seu novo Bearer Token.", token, DateTime.UtcNow.AddDays(7));
+                return new OutputAuthentication("Usuário autorizado. Configure seu novo Bearer Token.", token, DateTime.UtcNow.AddDays(7));
             }
             else
                 return new OutputAuthentication("Usuário não autorizado. Senha incorreta.", string.Empty, null);

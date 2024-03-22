@@ -14,14 +14,14 @@ public class AddressController(IApiDataService apiDataService, IAddressService s
     [LanguageDescription("pt-br", "Consulta endereço a partir do CEP")]
     [LanguageDescription("en", "Inquiry of address based on the ZIP code")]
     [LanguageDescription("es", "Consulta de dirección a partir del código postal ")]
-    [ProducesResponseType<OutputGetByCepAddress>(StatusCodes.Status200OK)]
+    [ProducesResponseType<OutputGetByPostalCodeAddress>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpGet("GetByCep/{cep}")]
-    public async Task<ActionResult<BaseResponseApi<OutputGetByCepAddress, ApiResponseException>>> GetByCep([Length(8,8)] string cep)
+    public async Task<ActionResult<BaseResponseApi<OutputGetByPostalCodeAddress, ApiResponseException>>> GetByPostalCode([Length(8,8)] string cep)
     {
         try
         {
-            return await ResponseAsync(await _service!.GetByCep(cep));
+            return await ResponseAsync(await _service!.GetByPostalCode(cep));
         }
         catch (BaseResponseException ex)
         {

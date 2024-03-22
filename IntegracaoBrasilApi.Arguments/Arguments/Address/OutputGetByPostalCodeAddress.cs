@@ -1,6 +1,6 @@
 ﻿namespace IntegracaoBrasilApi.Arguments;
 
-public class OutputGetByCepAddress
+public class OutputGetByPostalCodeAddress
 {
     public string? Cep { get; set; }
     public string? State { get; set; }
