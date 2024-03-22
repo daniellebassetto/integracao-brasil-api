@@ -1,4 +1,5 @@
-﻿using IntegracaoBrasilApi.ApiClient.RefitInterfaces;
+﻿using IntegracaoBrasilApi.Api.Generic;
+using IntegracaoBrasilApi.ApiClient.RefitInterfaces;
 using IntegracaoBrasilApi.Domain.ApiManagement;
 using IntegracaoBrasilApi.Domain.Interfaces;
 using IntegracaoBrasilApi.Domain.Interfaces.Repository;
@@ -89,9 +90,15 @@ public static class ConfigureServicesExtension
             Url = new Uri("https://github.com/danibassetto")
         };
 
+        const string title = "BrasilApi";
+
         ServiceCollection.AddSwaggerGen(x =>
         {
-            x.SwaggerDoc("pt-br", new OpenApiInfo { Title = "BrasilApi", Version = "pt-br", Contact = contact });
+            x.SwaggerDoc("pt-br", new OpenApiInfo { Title = title, Version = "pt-br", Contact = contact });
+            x.SwaggerDoc("en", new OpenApiInfo { Title = title, Version = "en", Contact = contact });
+            x.SwaggerDoc("es", new OpenApiInfo { Title = title, Version = "es", Contact = contact });
+
+            x.DocumentFilter<SwaggerCustomDocumentFilter>();
 
             x.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
             {
@@ -143,7 +150,7 @@ public static class ConfigureServicesExtension
             {
                 ValidateIssuer = false,
                 ValidateAudience = false,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("63bcc5be-fa37-4290-b5a4-57a6a4e3afcb")),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecurityKeyJwt.Key)),
                 ClockSkew = TimeSpan.Zero
             };
         });

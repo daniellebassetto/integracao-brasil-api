@@ -5,6 +5,7 @@ using IntegracaoBrasilApi.Domain.ApiManagement;
 using IntegracaoBrasilApi.Domain.Mapping;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,12 +47,16 @@ ApiData.SetMapper(new IntegracaoBrasilApi.Domain.Mapping.Mapper(new MapperConfig
 
 var app = builder.Build();
 
+const string title = "BrasilApi";
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(x =>
+    app.UseSwaggerUI(c =>
     {
-        x.SwaggerEndpoint("/swagger/pt-br/swagger.json", "BrasilApi");
+        c.DocExpansion(DocExpansion.None);
+        c.SwaggerEndpoint("/swagger/pt-br/swagger.json", $"{title} PT-BR");
+        c.SwaggerEndpoint("/swagger/en/swagger.json", $"{title} EN");
+        c.SwaggerEndpoint("/swagger/es/swagger.json", $"{title} ES");
     });
 }
 

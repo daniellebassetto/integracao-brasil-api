@@ -238,7 +238,7 @@ public class BaseController<TIService, TInputCreate, TInputUpdate, TInputIdentit
         if (_service != null)
             ListNotification.AddRange(_service?.ListNotification!);
 
-        List<Notification> listNegativeNotification = (from i in ListNotification.Union(result!.ListNotification) ?? [] where i.MessageType == EnumMessageType.Negative select i).ToList();
+        List<Notification> listNegativeNotification = (from i in ListNotification.Union(result!.ListNotification!) ?? [] where i.MessageType == EnumMessageType.Negative select i).ToList();
 
         if (listNegativeNotification.Count == 0)
         {

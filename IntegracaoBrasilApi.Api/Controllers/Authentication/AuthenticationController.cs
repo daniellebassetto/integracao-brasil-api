@@ -1,4 +1,5 @@
-﻿using IntegracaoBrasilApi.Arguments;
+﻿using IntegracaoBrasilApi.Api.Generic;
+using IntegracaoBrasilApi.Arguments;
 using IntegracaoBrasilApi.Domain.ApiManagement;
 using IntegracaoBrasilApi.Domain.Interfaces.Service;
 using Microsoft.AspNetCore.Authorization;
@@ -9,10 +10,9 @@ namespace IntegracaoBrasilApi.Api.Controllers;
 [Route("api/[controller]")]
 public class AuthenticationController(IApiDataService apiDataService, IAuthenticationService service) : BaseController_1<IAuthenticationService>(apiDataService, service)
 {
-    /// <summary>
-    /// Verifica se o usuário está cadastrado no sistema e retorna o token de acesso. 
-    /// Caso não tenha um usuário, crie um novo a partir do endpoint aberto de post no User.
-    /// </summary>
+    [LanguageDescription("pt-br", "Verifica se o usuário está cadastrado no sistema e retorna o token de acesso. Caso não tenha um usuário, crie um novo a partir do endpoint aberto de post no User.")]
+    [LanguageDescription("en", "Checks whether the user is registered in the system and returns the access token. If you don't have a user, create a new one from the open post endpoint in User.")]
+    [LanguageDescription("es", "Comprueba si el usuario está registrado en el sistema y devuelve el token de acceso. Si no tiene un usuario, cree uno nuevo desde el punto final de publicación abierta en Usuario.")]
     [AllowAnonymous]
     [HttpPost("Authenticate")]
     public async Task<ActionResult<BaseResponseApi<OutputAuthentication, string>>> Authenticate(InputAuthentication inputAuthentication)

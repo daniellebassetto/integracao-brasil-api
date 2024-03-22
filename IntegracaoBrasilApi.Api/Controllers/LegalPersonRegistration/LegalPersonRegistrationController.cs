@@ -1,4 +1,5 @@
-﻿using IntegracaoBrasilApi.Arguments;
+﻿using IntegracaoBrasilApi.Api.Generic;
+using IntegracaoBrasilApi.Arguments;
 using IntegracaoBrasilApi.Domain.ApiManagement;
 using IntegracaoBrasilApi.Domain.Interfaces;
 using IntegracaoBrasilApi.Domain.Services;
@@ -10,9 +11,9 @@ namespace IntegracaoBrasilApi.Api.Controllers;
 [Route("api/[controller]")]
 public class LegalPersonRegistrationController(IApiDataService apiDataService, ILegalPersonRegistrationService service) : BaseController_1<ILegalPersonRegistrationService>(apiDataService, service)
 {
-    /// <summary>
-    /// Consulta o Cadastro Nacional de Pessoa Física a partir do número do CNPJ
-    /// </summary>
+    [LanguageDescription("pt-br", "Consulta cadastro de pessoas jurídicas a partir do CNPJ")]
+    [LanguageDescription("en", "Search for corporate registrations based on the CNPJ")]
+    [LanguageDescription("es", "Consulta de registros de personas jurídicas a partir del CNPJ")]
     [ProducesResponseType<OutputGetByCnpjLegalPersonRegistration>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpGet("GetByCnpj/{cnpj}")]

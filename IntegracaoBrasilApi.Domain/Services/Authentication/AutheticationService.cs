@@ -1,4 +1,5 @@
 ﻿using IntegracaoBrasilApi.Arguments;
+using IntegracaoBrasilApi.Domain.ApiManagement;
 using IntegracaoBrasilApi.Domain.Interfaces.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
@@ -57,7 +58,7 @@ public class AuthenticationService(IHttpContextAccessor httpContext, IUserServic
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         ];
 
-        SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes("63bcc5be-fa37-4290-b5a4-57a6a4e3afcb"));
+        SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(SecurityKeyJwt.Key));
         SigningCredentials creds = new(key, SecurityAlgorithms.HmacSha256);
         var expireDate = DateTime.UtcNow.AddDays(7);
 

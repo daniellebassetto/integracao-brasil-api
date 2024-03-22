@@ -1,4 +1,5 @@
-﻿using IntegracaoBrasilApi.Arguments;
+﻿using IntegracaoBrasilApi.Api.Generic;
+using IntegracaoBrasilApi.Arguments;
 using IntegracaoBrasilApi.Domain.ApiManagement;
 using IntegracaoBrasilApi.Domain.Interfaces.Service;
 using IntegracaoBrasilApi.Domain.Services;
@@ -10,9 +11,9 @@ namespace IntegracaoBrasilApi.Api.Controllers.Address;
 [Route("api/brasilapi/[controller]")]
 public class AddressController(IApiDataService apiDataService, IAddressService service) : BaseController_1<IAddressService>(apiDataService, service)
 {
-    /// <summary>
-    /// Consulta um endereço a partir de um Código Postal (CEP)
-    /// </summary>
+    [LanguageDescription("pt-br", "Consulta endereço a partir do CEP")]
+    [LanguageDescription("en", "Inquiry of address based on the ZIP code")]
+    [LanguageDescription("es", "Consulta de dirección a partir del código postal ")]
     [ProducesResponseType<OutputGetByCepAddress>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpGet("GetByCep/{cep}")]

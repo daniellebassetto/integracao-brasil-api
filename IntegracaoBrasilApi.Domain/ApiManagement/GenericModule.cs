@@ -27,10 +27,7 @@ public class GenericModule
         {
             interfaceToInvoke.MethodInfo.Invoke(interfaceToInvoke.FieldInfo.GetValue(@class), new object[] { guidBeesApiDataRequest });
         }
-        catch
-        {
-
-        }
+        catch { }
         return true;
     }
 }
